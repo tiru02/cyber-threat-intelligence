@@ -1,0 +1,149 @@
+@import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
+
+@theme {
+  --color-cyber-bg: #030307;
+  --color-cyber-card: #0b0b16;
+  --color-cyber-card-light: #16162a;
+  --color-cyber-cyan: #00f0ff;
+  --color-cyber-pink: #ff007f;
+  --color-cyber-purple: #9d00ff;
+  --color-cyber-yellow: #ffdf00;
+  --color-cyber-green: #39ff14;
+  --color-cyber-border: #1a1a36;
+  --color-cyber-border-active: #00f0ff;
+}
+
+:root {
+  color-scheme: dark;
+  background-color: var(--color-cyber-bg);
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #030307;
+  color: #e2e8f0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  overflow-x: hidden;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #030307;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1a1a36;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #ff007f;
+}
+
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+  background: #030307 !important;
+}
+
+.leaflet-bar {
+  border: 1px solid #1a1a36 !important;
+  box-shadow: none !important;
+}
+
+.leaflet-bar a {
+  background-color: #0b0b16 !important;
+  color: #00f0ff !important;
+  border-bottom: 1px solid #1a1a36 !important;
+}
+
+.leaflet-bar a:hover {
+  background-color: #16162a !important;
+  color: #ff007f !important;
+}
+
+/* Custom Cyber Dashboard Styles */
+
+@keyframes pulse-glow-cyan {
+  0%, 100% { box-shadow: 0 0 5px rgba(0, 240, 255, 0.2), inset 0 0 5px rgba(0, 240, 255, 0.1); }
+  50% { box-shadow: 0 0 15px rgba(0, 240, 255, 0.5), inset 0 0 10px rgba(0, 240, 255, 0.2); }
+}
+
+@keyframes pulse-glow-pink {
+  0%, 100% { box-shadow: 0 0 5px rgba(255, 0, 127, 0.2), inset 0 0 5px rgba(255, 0, 127, 0.1); }
+  50% { box-shadow: 0 0 15px rgba(255, 0, 127, 0.5), inset 0 0 10px rgba(255, 0, 127, 0.2); }
+}
+
+.glow-cyan {
+  animation: pulse-glow-cyan 2s infinite ease-in-out;
+}
+
+.glow-pink {
+  animation: pulse-glow-pink 2s infinite ease-in-out;
+}
+
+/* Custom Scrollbar Glow */
+::-webkit-scrollbar-thumb {
+  background: var(--color-cyber-border);
+  border: 1px solid var(--color-cyber-border);
+  box-shadow: 0 0 8px rgba(0, 240, 255, 0.2);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-cyber-pink);
+  box-shadow: 0 0 12px rgba(255, 0, 127, 0.6);
+}
+
+/* Dialog (Modal) Styles */
+dialog.cyber-modal {
+  background: rgba(11, 11, 22, 0.95);
+  border: 1px solid var(--color-cyber-border);
+  border-radius: 8px;
+  color: #f1f5f9;
+  max-width: 650px;
+  width: 90%;
+  box-shadow: 0 0 30px rgba(0, 240, 255, 0.15), 0 0 1px rgba(0, 240, 255, 0.5);
+  padding: 0;
+  overflow: hidden;
+  font-family: monospace;
+}
+
+dialog.cyber-modal::backdrop {
+  background: rgba(3, 3, 7, 0.85);
+  backdrop-filter: blur(6px);
+  animation: fadeIn 0.2s ease-out;
+}
+
+dialog.cyber-modal[open] {
+  animation: modalScaleIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modalScaleIn {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Cyber grid background */
+.cyber-grid {
+  background-size: 40px 40px;
+  background-image: 
+    linear-gradient(to right, rgba(26, 26, 54, 0.2) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(26, 26, 54, 0.2) 1px, transparent 1px);
+}
