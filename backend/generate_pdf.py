@@ -163,24 +163,16 @@ def generate_pdf():
     pdf.add_page()
     pdf.add_section_header("3.0", "Operational Features Manual")
     pdf.write_paragraph(
-        "Cyber Sentinel V2.0 provides an interactive operations command console structured across four specialized dashboard sections:"
+        "Cyber Sentinel V2.0 provides an interactive operations command console structured across five specialized dashboard sections:"
     )
 
     pdf.write_bullet("Live Threat Monitor", "The main visual module displaying origin-to-target attack vectors as dashed lines. Glowing markers fly along coordinates dynamically based on interpolation loops, triggering concentric expanding rings (shockwaves) upon collision with target countries. It integrates a live threat log feed with severity indicators, IP reputation scanning, and attack category distributions.")
+    pdf.write_bullet("Country Threat Monitor", "A dedicated geographic monitoring interface. It aggregates attack telemetry dynamically per nation-state. Features a circular visual distribution of local threat families and renders an automated Prevention & Mitigation Advisor offering specific system repair recommendations and command templates.")
     pdf.write_bullet("Simulator Control", "The map header integrates speed multipliers (1x, 2x, 5x) and play/pause controls to speed up or pause the background threat stream feed simulator. You can inspect threats in details or export feed datasets directly as JSON or CSV files.")
     pdf.write_bullet("APT Threat Actors", "A Nation-state adversary catalog. Groups like Lazarus Group (APT38), Cozy Bear (APT29), Fancy Bear (APT28), Volt Typhoon, and Sandworm are profiled with threat levels, origins, target industries, preferred vectors, and CVE exploit history.")
     pdf.write_bullet("Mitigation CVEs", "Common Vulnerabilities and Exposures (CVE) search engine. Displays critical vulnerabilities with CVSS scores, threat details, and explicit patch recommendations or firewall blockings.")
     pdf.write_bullet("Defensive Toolkit", "Instantly compiles IP blocking shell rules. Users check suspicious IPs in the logs to generate output block scripts for UFW (deny host), iptables (INPUT DROP), or Cisco ASA (access-list deny).")
 
-    pdf.ln(5)
-    pdf.add_section_header("4.0", "DEFCON Alarm States")
-    pdf.write_paragraph(
-        "The DEFCON level evaluates the percentage of high-severity alerts in your sensor history and changes state dynamically:"
-    )
-    pdf.write_bullet("DEFCON 1 (Red)", "Over 40% high risk threat alerts. Critical Alert. Severe active threat status. High alerts active.")
-    pdf.write_bullet("DEFCON 2 (Purple)", "25% to 40% high risk threat alerts. Elevated Actor Activity. Targeted campaigns active.")
-    pdf.write_bullet("DEFCON 3 (Yellow)", "12% to 25% high risk threat alerts. Elevated System Alert. Moderate scanner activity.")
-    pdf.write_bullet("DEFCON 4 (Cyan)", "0% to 12% high risk threat alerts. Systems Operational. Normal background surveillance.")
 
     # Page 4: Backend API Specification
     pdf.add_page()
@@ -192,8 +184,13 @@ def generate_pdf():
     pdf.write_bullet("GET /api/threats", "Returns a JSON list of active threat payloads containing indicator IP, type, signature, severity, origin country, and timestamp.")
     pdf.write_bullet("GET /api/map-data", "Returns connecting flight pathways for the map layout containing geocoded origin and target coordinates, payload type, and values.")
     pdf.write_bullet("GET /api/apt-groups", "Returns the database registry of nation-state threat actors.")
-    pdf.write_bullet("GET /api/cves", "Returns the vulnerability database registry with CVSS score metrics and mitigations.")
+    pdf.write_bullet("GET /api/cves", "Returns the vulnerability database registry with CVSS score metrics and mitigations. Used as local fallback data.")
+    pdf.write_bullet("GET /api/prevention-strategies", "Returns a mapping of threat signatures to detailed forensic summaries, checklists, and copy-pasteable firewall commands.")
     pdf.write_bullet("GET /api/check-ip/{ip}", "Dynamically checks risk index, threat category, owner, and geolocation. The score is simulated in python via MD5 hashing on input IP.")
+    pdf.write_bullet("GET /api/threatfox", "Returns the 50 most recent live IOCs (IPs, domains, hashes) from the ThreatFox community feed.")
+    pdf.write_bullet("GET /api/urlhaus", "Returns the 50 most recent active malware URLs from the URLhaus community feed.")
+    pdf.write_bullet("GET /api/github-advisories", "Proxies the official GitHub Security Advisory database API, returning recent open-source package vulnerabilities.")
+    pdf.write_bullet("GET /api/circl-cves", "Returns the 30 most recent CVE records published or updated from the CIRCL live feed.")
 
     pdf.ln(5)
     pdf.add_section_header("6.0", "API Response Example")
@@ -262,6 +259,48 @@ def generate_pdf():
         "To terminate the servers, simply press CTRL+C once. The trap signal handler catches "
         "the interrupt and sends SIGTERM to both the Node.js (Vite) and Python (Uvicorn) background tasks."
     )
+
+    # Page 6: Country Threat Monitor & Prevention Advisor
+    pdf.add_page()
+    pdf.add_section_header("8.0", "Country Threat Monitor & Prevention")
+    pdf.write_paragraph(
+        "The Country Threat Monitor tab provides deep visibility into localized cyber threat telemetry. "
+        "This component computes dynamic real-time statistics per monitored country, linking outbound incident frequencies, "
+        "inbound targeted vectors, and overall threat index calculations."
+    )
+    pdf.write_paragraph(
+        "The interactive module includes two main areas: a monitored regions sidebar showing active risk categories "
+        "(Critical, High, Medium, Low), and an analytics workspace rendering a Recharts distribution of threat families "
+        "and active log events specific to that nation."
+    )
+    pdf.write_paragraph(
+        "Directly below the metrics, the Prevention & Mitigation Advisor automatically parses active threats in the "
+        "selected country and displays custom security recommendations. For instance:"
+    )
+    pdf.write_bullet("SSH Brute Force", "Requires disabling root login, enforcing key authentication, and configuring Fail2Ban blocks.")
+    pdf.write_bullet("Log4Shell Attempts", "Requires upgrading dependencies, deploying WAF rules, and disabling format string lookup mechanisms.")
+    pdf.write_bullet("Mirai Botnet C2", "Requires credentials modification on IoT hosts, port blocks (23/2323), and network segmentation.")
+    
+    pdf.write_paragraph(
+        "Each advisory card includes copy-pasteable firewall commands (like iptables, ufw, or cisco ACL overrides) "
+        "allowing security administrators to rapidly apply defensive parameters."
+    )
+
+    # Page 7: Threat Intelligence Feeds Hub
+    pdf.add_page()
+    pdf.add_section_header("9.0", "Threat Intelligence Feeds Hub")
+    pdf.write_paragraph(
+        "The Threat Intelligence Feeds Hub integrates multiple open-source intelligence feeds as separate routes "
+        "within a unified React frontend dashboard view. This provides a central command center for tracking live, "
+        "in-the-wild Indicators of Compromise (IOCs), malware URLs, package vulnerabilities, and new CVE database listings."
+    )
+    pdf.write_paragraph(
+        "Each feed constitutes a separate tab route with custom filters and dedicated UI cards:"
+    )
+    pdf.write_bullet("ThreatFox IOCs", "A tabular view of IP addresses, domains, and files associated with malware families like ClearFake, showing reporter credit and source timestamp.")
+    pdf.write_bullet("URLhaus URLs", "An active feed of malicious web links used in dropper campaigns. Active and offline URLs are badged with copyable links for threat validation.")
+    pdf.write_bullet("GitHub Advisories", "A grid view of package security alerts showing vulnerability summaries, severity levels, target packages, and direct links to GitHub Advisories.")
+    pdf.write_bullet("CIRCL CVEs", "A timeline of new CVE reports with CVSS score color badges and technical vulnerability summaries, keeping administrators informed of emerging threats.")
 
     # Save PDF
     pdf.output("../Cyber_Sentinel_Documentation.pdf")
